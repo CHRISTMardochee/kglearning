@@ -192,14 +192,64 @@ footer{padding:36px 60px;border-top:1px solid var(--subtle);display:flex;justify
 
 @media(max-width:900px){
   nav{padding:14px 22px}
+  .nav-brand{font-size:13px}
+  .nav-cta{padding:8px 16px;font-size:13px}
   #hero{padding:90px 22px 60px}
   .hero-inner{grid-template-columns:1fr;gap:40px}
   .book-scene{display:none}
+  .badge{font-size:10px;padding:4px 10px;flex-wrap:wrap}
+  .hero-title{font-size:clamp(36px,8vw,50px)}
+  .hero-desc{font-size:15px}
+  .hero-stats{flex-wrap:wrap;gap:20px}
+  .stat .num{font-size:24px}
+  .hero-actions{flex-direction:column;align-items:stretch}
+  .hero-actions .btn-primary,.hero-actions .btn-ghost{text-align:center;justify-content:center}
   #roi,#timetable,#chapters,#codepreview,#author,#pricing{padding:56px 22px}
+  .roi-inner{flex-direction:column;text-align:center}
+  .roi-numbers{justify-content:center}
+  .tt-table{display:block;overflow-x:auto;-webkit-overflow-scrolling:touch}
+  .tt-table thead,.tt-table tbody,.tt-table tr,.tt-table th,.tt-table td{min-width:100px}
   .ch-grid{grid-template-columns:1fr}
-  .author-inner{grid-template-columns:1fr}
-  .roi-inner{flex-direction:column}
-  footer{padding:28px 22px}
+  .ch-card.bonus{grid-column:auto!important}
+  .cb-body{font-size:11.5px;padding:16px;line-height:1.8}
+  .code-output{font-size:11px;overflow-x:auto;-webkit-overflow-scrolling:touch;white-space:nowrap}
+  .author-inner{grid-template-columns:1fr;text-align:center}
+  .author-av{margin:0 auto}
+  .author-badges{justify-content:center}
+  .price-card{padding:32px 22px;margin:0 auto;border-radius:16px}
+  .price-amount{font-size:46px}
+  .price-amount sub{font-size:16px}
+  footer{padding:28px 22px;flex-direction:column;text-align:center;gap:8px}
+}
+
+@media(max-width:480px){
+  nav{padding:12px 16px}
+  #hero{padding:80px 16px 40px}
+  .hero-author{font-size:11.5px}
+  .hero-title{font-size:clamp(28px,7.5vw,38px)}
+  .hero-tagline{font-size:11px}
+  .hero-desc{font-size:14px}
+  .hero-stats{gap:16px}
+  .stat .num{font-size:20px}
+  .stat .lbl{font-size:9.5px}
+  #roi,#timetable,#chapters,#codepreview,#author,#pricing{padding:40px 16px}
+  .roi-quote{font-size:18px}
+  .roi-stat .n{font-size:30px}
+  .st2{font-size:clamp(24px,6vw,32px)}
+  .ch-card{padding:20px}
+  .cb-body{font-size:10.5px;padding:12px}
+  .cb-filename{font-size:10px}
+  .code-output{font-size:10px;padding:12px 14px}
+  .author-av{width:120px;height:120px;font-size:34px}
+  .author-name{font-size:22px}
+  .price-card{padding:28px 16px}
+  .price-title{font-size:20px}
+  .price-amount{font-size:38px}
+  .price-feat li{font-size:12.5px}
+  .price-cta{font-size:15px;padding:14px}
+  footer{padding:22px 16px}
+  .ft-brand{font-size:12px}
+  .ft-copy{font-size:10px}
 }
 </style>
 </head>
