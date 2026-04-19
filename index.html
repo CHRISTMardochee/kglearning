@@ -1,0 +1,531 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Python pour Comptable — Le Guide Pratique | KGlearning</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,400&family=JetBrains+Mono:wght@400;700&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --teal:#1D9E75;--teal-dark:#0F6E56;--teal-light:#5DCAA5;
+  --gold:#D4AF37;
+  --bg:#07090f;--bg2:#0d1118;--bg3:#121720;
+  --text:#e2e4ef;--muted:#7a8099;--subtle:#2e3347;
+  --font-display:'Playfair Display',Georgia,serif;
+  --font-mono:'JetBrains Mono',monospace;
+  --font-body:'DM Sans',system-ui,sans-serif;
+}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--text);font-family:var(--font-body);overflow-x:hidden}
+::-webkit-scrollbar{width:5px}
+::-webkit-scrollbar-track{background:var(--bg)}
+::-webkit-scrollbar-thumb{background:var(--teal-dark);border-radius:3px}
+
+/* NAV */
+nav{position:fixed;top:0;width:100%;z-index:100;padding:18px 60px;display:flex;align-items:center;justify-content:space-between;backdrop-filter:blur(20px);background:rgba(7,9,15,.88);border-bottom:1px solid rgba(29,158,117,.1)}
+.nav-logo{display:flex;align-items:center;gap:10px;text-decoration:none}
+.nav-logo-icon{width:36px;height:36px;background:var(--teal);border-radius:7px;display:flex;align-items:center;justify-content:center;font-family:var(--font-mono);font-weight:700;font-size:13px;color:#fff}
+.nav-brand{font-size:15px;font-weight:500;color:var(--text)}
+.nav-brand span{color:var(--teal)}
+.nav-cta{background:var(--teal);color:#fff;padding:9px 22px;border-radius:6px;font-size:14px;font-weight:500;text-decoration:none;transition:background .2s}
+.nav-cta:hover{background:var(--teal-dark)}
+
+/* HERO */
+#hero{min-height:100vh;position:relative;display:flex;align-items:center;overflow:hidden;padding:110px 60px 70px}
+.grid-bg{position:absolute;inset:0;background-image:linear-gradient(rgba(29,158,117,.04) 1px,transparent 1px),linear-gradient(90deg,rgba(29,158,117,.04) 1px,transparent 1px);background-size:56px 56px;pointer-events:none}
+#hero::after{content:'';position:absolute;top:-200px;right:-100px;width:800px;height:800px;background:radial-gradient(ellipse,rgba(29,158,117,.1) 0%,transparent 60%);pointer-events:none}
+
+.hero-inner{position:relative;z-index:2;display:grid;grid-template-columns:1fr 440px;gap:70px;align-items:center;max-width:1200px;margin:0 auto;width:100%}
+
+.badge{display:inline-flex;align-items:center;gap:8px;background:rgba(29,158,117,.12);border:1px solid rgba(29,158,117,.28);padding:5px 14px;border-radius:20px;font-family:var(--font-mono);font-size:11.5px;color:var(--teal);margin-bottom:24px;letter-spacing:.4px}
+.badge-dot{width:6px;height:6px;background:var(--teal);border-radius:50%;animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.25}}
+
+.hero-author{font-size:13px;color:var(--muted);margin-bottom:14px;font-style:italic}
+.hero-title{font-family:var(--font-display);font-size:clamp(50px,5.2vw,80px);font-weight:900;line-height:1.04;margin-bottom:0}
+.hero-title .t1,.hero-title .t2{color:var(--text)}
+.hero-title .t3{color:var(--teal);display:block;font-style:italic}
+
+.hero-tagline{font-family:var(--font-mono);font-size:12.5px;color:var(--teal-light);margin:20px 0 16px;letter-spacing:.4px}
+.hero-tagline span{color:var(--muted)}
+
+.hero-desc{font-size:16.5px;line-height:1.78;color:#8e94b0;max-width:520px;margin-bottom:34px;font-weight:300}
+.hero-desc strong{color:var(--text);font-weight:500}
+
+.hero-actions{display:flex;gap:12px;flex-wrap:wrap;align-items:center}
+.btn-primary{background:var(--teal);color:#fff;padding:15px 30px;border-radius:8px;font-size:15.5px;font-weight:500;text-decoration:none;transition:all .25s;display:inline-flex;align-items:center;gap:8px}
+.btn-primary:hover{background:var(--teal-dark);transform:translateY(-2px)}
+.btn-ghost{border:1px solid var(--subtle);color:#8e94b0;padding:15px 26px;border-radius:8px;font-size:14.5px;text-decoration:none;transition:all .25s}
+.btn-ghost:hover{border-color:var(--teal);color:var(--teal)}
+
+.hero-stats{display:flex;gap:36px;margin-top:42px;padding-top:30px;border-top:1px solid var(--subtle)}
+.stat .num{font-family:var(--font-display);font-size:30px;font-weight:700;color:var(--text)}
+.stat .lbl{font-size:11px;color:var(--muted);letter-spacing:.6px;text-transform:uppercase;margin-top:2px}
+
+/* BOOK */
+.book-scene{perspective:1000px;display:flex;justify-content:center;align-items:center;position:relative}
+.book-wrap{transform-style:preserve-3d;transform:rotateY(-18deg) rotateX(4deg);transition:transform .6s cubic-bezier(.25,.46,.45,.94);position:relative}
+.book-wrap:hover{transform:rotateY(-6deg) rotateX(2deg)}
+.book-front{width:270px;height:378px;background:linear-gradient(155deg,#0F6E56 0%,#085041 55%,#031E15 100%);border-radius:3px 10px 10px 3px;position:relative;overflow:hidden;box-shadow:20px 20px 60px rgba(0,0,0,.65),0 0 0 1px rgba(255,255,255,.04)}
+.bk-grid{position:absolute;inset:0;background-image:linear-gradient(rgba(255,255,255,.035) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.035) 1px,transparent 1px);background-size:24px 24px}
+.bk-glow{position:absolute;bottom:-50px;right:-50px;width:210px;height:210px;border-radius:50%;background:rgba(29,158,117,.12)}
+.bk-nodes{position:absolute;top:24px;left:50%;transform:translateX(-50%);width:180px}
+.bk-nodes svg{width:100%;overflow:visible}
+.bk-content{position:absolute;inset:0;padding:28px 22px;display:flex;flex-direction:column;justify-content:flex-end}
+.bk-tag{font-family:var(--font-mono);font-size:8px;color:rgba(93,202,165,.75);letter-spacing:2px;text-transform:uppercase;margin-bottom:12px}
+.bk-title{font-family:var(--font-display);font-size:26px;font-weight:900;color:#fff;line-height:1.1;margin-bottom:6px}
+.bk-sub{font-family:var(--font-display);font-size:12px;font-style:italic;color:rgba(255,255,255,.6);margin-bottom:12px}
+.bk-bar{width:36px;height:2px;background:var(--gold);margin-bottom:12px}
+.bk-author{font-size:8.5px;color:rgba(255,255,255,.45);letter-spacing:.8px;text-transform:uppercase}
+.bk-kg{position:absolute;top:20px;right:18px;font-family:var(--font-mono);font-size:9px;color:rgba(93,202,165,.5);font-weight:700}
+.book-spine{position:absolute;left:-30px;top:0;width:30px;height:378px;background:linear-gradient(180deg,#031E15,#085041);transform-origin:right;transform:rotateY(-90deg);display:flex;align-items:center;justify-content:center;border-radius:3px 0 0 3px}
+.book-spine-txt{font-family:var(--font-display);font-size:9px;color:rgba(255,255,255,.4);writing-mode:vertical-rl;letter-spacing:2px}
+.float-code{position:absolute;bottom:-24px;right:-50px;background:#0c0f18;border:1px solid rgba(29,158,117,.25);border-radius:8px;padding:12px 16px;font-family:var(--font-mono);font-size:11px;line-height:1.9;box-shadow:0 16px 40px rgba(0,0,0,.4);min-width:230px;z-index:10}
+.fc-dots{display:flex;gap:5px;margin-bottom:9px}
+.fc-dots span{width:7px;height:7px;border-radius:50%}
+.kw{color:#c792ea}.fn{color:#82aaff}.st{color:#c3e88d}.cm{color:#4a5568;font-style:italic}.nu{color:#f78c6c}.vr{color:var(--text)}
+
+/* ROI BAND */
+#roi{background:linear-gradient(135deg,var(--teal-dark),#052e1e);padding:56px 60px;position:relative;overflow:hidden}
+#roi::before{content:'';position:absolute;right:-100px;top:-100px;width:500px;height:500px;background:radial-gradient(circle,rgba(255,255,255,.04),transparent 65%)}
+.roi-inner{max-width:1100px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;gap:40px;flex-wrap:wrap}
+.roi-quote{font-family:var(--font-display);font-size:clamp(22px,2.5vw,32px);font-style:italic;color:#fff;max-width:600px;line-height:1.5}
+.roi-quote em{color:var(--gold);font-style:normal}
+.roi-numbers{display:flex;gap:40px;flex-shrink:0}
+.roi-stat{text-align:center}
+.roi-stat .n{font-family:var(--font-display);font-size:40px;font-weight:700;color:#fff}
+.roi-stat .l{font-size:12px;color:rgba(255,255,255,.55);letter-spacing:.8px;text-transform:uppercase;margin-top:4px}
+
+/* TIME TABLE */
+#timetable{padding:80px 60px;background:var(--bg2);border-top:1px solid var(--subtle);border-bottom:1px solid var(--subtle)}
+.tt-inner{max-width:860px;margin:0 auto}
+.sl{font-family:var(--font-mono);font-size:11px;color:var(--teal);letter-spacing:2px;text-transform:uppercase;margin-bottom:14px}
+.st2{font-family:var(--font-display);font-size:clamp(32px,3.5vw,48px);font-weight:700;line-height:1.15;margin-bottom:40px}
+.st2 em{font-style:italic;color:var(--teal)}
+.tt-table{width:100%;border-collapse:collapse;font-size:14px}
+.tt-table thead th{font-family:var(--font-mono);font-size:11px;letter-spacing:1.5px;text-transform:uppercase;padding:12px 20px;border-bottom:1px solid var(--subtle);text-align:left;color:var(--muted)}
+.tt-table thead th:not(:first-child){text-align:right}
+.tt-table tbody tr{border-bottom:1px solid rgba(46,51,71,.5);transition:background .2s}
+.tt-table tbody tr:hover{background:rgba(29,158,117,.04)}
+.tt-table td{padding:14px 20px;color:#8e94b0}
+.tt-table td:first-child{color:var(--text);font-weight:400}
+.tt-table td:not(:first-child){text-align:right;font-family:var(--font-mono);font-size:13px}
+.tt-table .bad{color:#e87070}
+.tt-table .good{color:var(--teal-light)}
+.tt-table .total-row td{font-weight:500;color:var(--text);border-top:2px solid var(--subtle);padding-top:18px}
+.tt-table .total-row .good{color:#FAC775;font-size:15px}
+
+/* CHAPTERS */
+#chapters{padding:100px 60px}
+.ch-intro{max-width:700px;margin-bottom:54px}
+.ch-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;max-width:1100px;margin:0 auto}
+.ch-card{background:var(--bg2);border:1px solid var(--subtle);border-radius:12px;padding:26px;transition:all .3s;cursor:default;position:relative;overflow:hidden}
+.ch-card:hover{border-color:rgba(29,158,117,.35);transform:translateY(-3px);box-shadow:0 18px 36px rgba(0,0,0,.25)}
+.ch-card::after{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--teal),transparent);opacity:0;transition:opacity .3s}
+.ch-card:hover::after{opacity:1}
+.ch-card.bonus{border-color:rgba(212,175,55,.2);background:linear-gradient(135deg,var(--bg2),rgba(212,175,55,.03))}
+.ch-card.bonus::after{background:linear-gradient(90deg,var(--gold),transparent)}
+.ch-num{font-family:var(--font-mono);font-size:10.5px;color:var(--teal);letter-spacing:1.5px;margin-bottom:12px}
+.ch-card.bonus .ch-num{color:var(--gold)}
+.ch-title{font-family:var(--font-display);font-size:17.5px;font-weight:700;color:var(--text);margin-bottom:8px;line-height:1.3}
+.ch-desc{font-size:13px;color:var(--muted);line-height:1.7;margin-bottom:14px}
+.ch-tags{display:flex;flex-wrap:wrap;gap:5px}
+.ch-tag{font-family:var(--font-mono);font-size:9.5px;background:rgba(29,158,117,.08);border:1px solid rgba(29,158,117,.18);color:var(--teal-light);padding:2.5px 7px;border-radius:4px}
+.ch-card.bonus .ch-tag{background:rgba(212,175,55,.08);border-color:rgba(212,175,55,.2);color:#D4AF37}
+
+/* CODE PREVIEW */
+#codepreview{padding:80px 60px;background:var(--bg2);border-top:1px solid var(--subtle);border-bottom:1px solid var(--subtle)}
+.cp-inner{max-width:960px;margin:0 auto}
+.code-block{background:#080b12;border:1px solid var(--subtle);border-radius:12px;overflow:hidden}
+.cb-header{display:flex;align-items:center;gap:8px;padding:13px 18px;border-bottom:1px solid var(--subtle);background:#0a0d16}
+.cb-dots{display:flex;gap:5px}
+.cb-dots span{width:9px;height:9px;border-radius:50%}
+.cb-filename{font-family:var(--font-mono);font-size:11.5px;color:var(--muted);margin-left:8px}
+.cb-body{padding:22px;font-family:var(--font-mono);font-size:13px;line-height:2;overflow-x:auto}
+.cb-body .kw{color:#c792ea}.cb-body .fn{color:#82aaff}.cb-body .st{color:#c3e88d}
+.cb-body .cm{color:#4a5568;font-style:italic}.cb-body .nu{color:#f78c6c}
+.cb-body .cl{color:#ffcb6b}.cb-body .vr{color:var(--text)}
+.code-output{margin-top:14px;background:#080b12;border:1px solid rgba(29,158,117,.18);border-radius:8px;padding:16px 20px;font-family:var(--font-mono);font-size:12.5px;color:var(--teal-light);line-height:1.9}
+.code-output::before{content:'OUTPUT';display:block;font-size:9.5px;color:var(--muted);letter-spacing:2px;margin-bottom:10px}
+
+/* AUTHOR */
+#author{padding:90px 60px}
+.author-inner{max-width:860px;margin:0 auto;display:grid;grid-template-columns:180px 1fr;gap:56px;align-items:start}
+.author-av{width:160px;height:160px;border-radius:14px;background:linear-gradient(135deg,#0F6E56,#031E15);display:flex;align-items:center;justify-content:center;font-family:var(--font-display);font-size:46px;font-weight:700;color:var(--teal-light);border:1px solid rgba(29,158,117,.25);flex-shrink:0}
+.author-tag{font-family:var(--font-mono);font-size:10.5px;color:var(--teal);letter-spacing:1.5px;text-transform:uppercase;margin-bottom:10px}
+.author-name{font-family:var(--font-display);font-size:28px;font-weight:700;margin-bottom:5px}
+.author-role{font-size:13.5px;color:var(--muted);margin-bottom:18px}
+.author-bio{font-size:14.5px;line-height:1.82;color:#8e94b0;margin-bottom:22px;font-weight:300}
+.author-badges{display:flex;flex-wrap:wrap;gap:7px}
+.author-badge{font-size:11.5px;border:1px solid var(--subtle);padding:4px 11px;border-radius:20px;color:var(--muted)}
+
+/* PRICING */
+#pricing{padding:100px 60px;text-align:center;position:relative;overflow:hidden}
+#pricing::before{content:'';position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:700px;height:700px;background:radial-gradient(ellipse,rgba(29,158,117,.07) 0%,transparent 65%);pointer-events:none}
+.price-card{max-width:500px;margin:0 auto;background:var(--bg2);border:1px solid rgba(29,158,117,.25);border-radius:20px;padding:50px;position:relative;overflow:hidden}
+.price-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,transparent,var(--teal),var(--gold),var(--teal),transparent)}
+.price-label{font-family:var(--font-mono);font-size:11px;color:var(--teal);letter-spacing:2px;text-transform:uppercase;margin-bottom:10px}
+.price-title{font-family:var(--font-display);font-size:26px;font-weight:700;margin-bottom:6px}
+.price-sub{font-size:13.5px;color:var(--muted);margin-bottom:28px}
+.price-amount{font-family:var(--font-display);font-size:58px;font-weight:900;margin-bottom:6px}
+.price-amount sub{font-size:20px;color:var(--muted);font-family:var(--font-body);font-weight:300;vertical-align:middle}
+.price-note{font-size:12.5px;color:var(--muted);margin-bottom:28px}
+.price-feat{list-style:none;text-align:left;margin-bottom:32px;display:flex;flex-direction:column;gap:11px}
+.price-feat li{display:flex;align-items:center;gap:10px;font-size:13.5px;color:#8e94b0}
+.price-feat li::before{content:'';width:15px;height:15px;flex-shrink:0;border-radius:50%;background:rgba(29,158,117,.12);border:1px solid var(--teal);background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='M3 8l3.5 3.5L13 4.5' stroke='%231D9E75' stroke-width='2' fill='none' stroke-linecap='round'/%3E%3C/svg%3E")}
+.price-cta{display:block;width:100%;padding:17px;background:var(--teal);color:#fff;border-radius:9px;font-size:16.5px;font-weight:500;text-decoration:none;transition:all .25s}
+.price-cta:hover{background:var(--teal-dark);transform:translateY(-2px);box-shadow:0 12px 28px rgba(29,158,117,.25)}
+.price-link{display:block;margin-top:14px;font-family:var(--font-mono);font-size:10.5px;color:var(--muted)}
+
+/* FOOTER */
+footer{padding:36px 60px;border-top:1px solid var(--subtle);display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:14px}
+.ft-brand{font-size:13.5px;color:var(--muted)}
+.ft-brand strong{color:var(--teal)}
+.ft-copy{font-size:11.5px;color:var(--subtle)}
+
+/* REVEAL */
+.reveal{opacity:0;transform:translateY(28px);transition:opacity .65s ease,transform .65s ease}
+.reveal.visible{opacity:1;transform:none}
+.d1{transition-delay:.1s}.d2{transition-delay:.2s}.d3{transition-delay:.3s}.d4{transition-delay:.4s}
+
+@media(max-width:900px){
+  nav{padding:14px 22px}
+  #hero{padding:90px 22px 60px}
+  .hero-inner{grid-template-columns:1fr;gap:40px}
+  .book-scene{display:none}
+  #roi,#timetable,#chapters,#codepreview,#author,#pricing{padding:56px 22px}
+  .ch-grid{grid-template-columns:1fr}
+  .author-inner{grid-template-columns:1fr}
+  .roi-inner{flex-direction:column}
+  footer{padding:28px 22px}
+}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a href="#" class="nav-logo">
+    <div class="nav-logo-icon">KG</div>
+    <span class="nav-brand">KG<span>learning</span></span>
+  </a>
+  <a href="#pricing" class="nav-cta">Obtenir le livre</a>
+</nav>
+
+<!-- HERO -->
+<section id="hero">
+  <div class="grid-bg"></div>
+  <div class="hero-inner">
+
+    <div>
+      <div class="badge"><span class="badge-dot"></span>Ebook Numérique · Comptabilité & Python</div>
+      <p class="hero-author">Par M.M. Mardochée KIKIGBAGBAN — Lead Developer & Data Trainer</p>
+      <h1 class="hero-title">
+        <span class="t1">Python pour</span><br>
+        <span class="t2">Comptable</span>
+        <span class="t3">Le Guide Pratique</span>
+      </h1>
+      <p class="hero-tagline"><span>// </span>Automatisez votre comptabilité — du relevé bancaire au bilan</p>
+      <p class="hero-desc">
+        Les comptables passent <strong>60% de leur temps</strong> sur des tâches répétitives.
+        Ce guide vous montre comment Python réduit 8 heures de travail à
+        <strong>moins d'une minute</strong> — sans être développeur.
+      </p>
+      <div class="hero-actions">
+        <a href="#pricing" class="btn-primary">Obtenir l'ebook →</a>
+        <a href="#chapters" class="btn-ghost">Voir le programme</a>
+      </div>
+      <div class="hero-stats">
+        <div class="stat"><span class="num">9</span><span class="lbl">Chapitres</span></div>
+        <div class="stat"><span class="num">5</span><span class="lbl">Scripts bonus</span></div>
+        <div class="stat"><span class="num">0</span><span class="lbl">Prérequis dev</span></div>
+        <div class="stat"><span class="num">10–15h</span><span class="lbl">De lecture</span></div>
+      </div>
+    </div>
+
+    <div class="book-scene">
+      <div class="book-wrap">
+        <div class="book-spine"><span class="book-spine-txt">Python pour Comptable</span></div>
+        <div class="book-front">
+          <div class="bk-grid"></div>
+          <div class="bk-glow"></div>
+
+          <!-- SVG data nodes on cover -->
+          <div class="bk-nodes">
+            <svg height="50" viewBox="0 0 180 50">
+              <line x1="20" y1="30" x2="90" y2="12" stroke="rgba(255,255,255,.3)" stroke-width="1.5"/>
+              <line x1="90" y1="12" x2="160" y2="30" stroke="rgba(255,255,255,.3)" stroke-width="1.5"/>
+              <line x1="90" y1="12" x2="90" y2="44" stroke="rgba(255,255,255,.2)" stroke-width="1"/>
+              <circle cx="20" cy="30" r="5" fill="rgba(255,255,255,.45)"/>
+              <circle cx="90" cy="12" r="8" fill="rgba(255,255,255,.7)"/>
+              <circle cx="160" cy="30" r="5" fill="rgba(255,255,255,.45)"/>
+              <circle cx="90" cy="44" r="4" fill="rgba(255,255,255,.3)"/>
+            </svg>
+          </div>
+
+          <div class="bk-content">
+            <span class="bk-tag">KGlearning · Ebook Pratique</span>
+            <div class="bk-title">Python<br>pour<br>Comptable</div>
+            <div class="bk-sub">Le Guide Pratique</div>
+            <div class="bk-bar"></div>
+            <div class="bk-author">M.M. Mardochée KIKIGBAGBAN</div>
+          </div>
+          <div class="bk-kg">KGlearning</div>
+        </div>
+
+        <div class="float-code">
+          <div class="fc-dots">
+            <span style="background:#ff5f57"></span>
+            <span style="background:#febc2e"></span>
+            <span style="background:#28c840"></span>
+          </div>
+          <div><span class="cm"># Calcul TVA automatique</span></div>
+          <div><span class="kw">for</span> <span class="vr">f</span> <span class="kw">in</span> <span class="vr">factures</span>:</div>
+          <div>&nbsp;&nbsp;<span class="vr">tva</span> = <span class="vr">f</span>[<span class="st">"ht"</span>] * <span class="nu">0.18</span></div>
+          <div>&nbsp;&nbsp;<span class="vr">ttc</span> = <span class="vr">f</span>[<span class="st">"ht"</span>] + <span class="vr">tva</span></div>
+          <div style="color:var(--teal-light)">&nbsp;&nbsp;<span class="fn">print</span>(<span class="st">f"TTC: {'{ttc:,.0f}'} FCFA"</span>)</div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ROI BAND -->
+<section id="roi">
+  <div class="roi-inner">
+    <div class="roi-quote reveal">
+      « 8 heures de tâches répétitives réduites à <em>moins d'une minute</em>.<br>
+      Rentabilisé dès le premier mois. »
+    </div>
+    <div class="roi-numbers reveal d1">
+      <div class="roi-stat">
+        <div class="n">~40h</div>
+        <div class="l">Gagnées / mois</div>
+      </div>
+      <div class="roi-stat">
+        <div class="n">60%</div>
+        <div class="l">Tâches automatisées</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TIME TABLE -->
+<section id="timetable">
+  <div class="tt-inner">
+    <p class="sl reveal">Le constat chiffré</p>
+    <h2 class="st2 reveal">Avant / <em>Après Python</em></h2>
+    <table class="tt-table reveal">
+      <thead>
+        <tr>
+          <th>Tâche comptable</th>
+          <th>Manuel</th>
+          <th>Avec Python</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td>Saisie de 500 écritures</td><td class="bad">4 heures</td><td class="good">30 secondes</td></tr>
+        <tr><td>Rapprochement bancaire</td><td class="bad">2 heures</td><td class="good">10 secondes</td></tr>
+        <tr><td>Calcul TVA mensuelle</td><td class="bad">1 heure</td><td class="good">5 secondes</td></tr>
+        <tr><td>Génération du grand livre</td><td class="bad">30 minutes</td><td class="good">2 secondes</td></tr>
+        <tr><td>Balance générale</td><td class="bad">30 minutes</td><td class="good">2 secondes</td></tr>
+        <tr class="total-row"><td><strong>TOTAL</strong></td><td class="bad"><strong>8 heures</strong></td><td class="good"><strong>&lt; 1 minute</strong></td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- CHAPTERS -->
+<section id="chapters">
+  <div class="section-inner" style="max-width:1100px;margin:0 auto">
+    <p class="sl reveal">Programme complet</p>
+    <div class="ch-intro reveal">
+      <h2 class="st2">9 chapitres + BONUS<br><em>du zéro au bilan automatisé</em></h2>
+      <p style="font-size:15.5px;color:var(--muted);line-height:1.75;margin-top:14px;font-weight:300">
+        Conçu pour les comptables, experts-comptables et étudiants en finance.
+        Aucune expérience de développement requise. Exemples en FCFA, contexte Afrique de l'Ouest.
+      </p>
+    </div>
+    <div class="ch-grid">
+
+      <div class="ch-card reveal">
+        <div class="ch-num">CH. 01</div>
+        <div class="ch-title">Pourquoi Python quand on est comptable ?</div>
+        <div class="ch-desc">ROI concret, ce que Python fait (et ne fait pas), comparatif avant/après. La motivation pour commencer.</div>
+        <div class="ch-tags"><span class="ch-tag">Concepts</span><span class="ch-tag">ROI</span></div>
+      </div>
+
+      <div class="ch-card reveal d1">
+        <div class="ch-num">CH. 02</div>
+        <div class="ch-title">Installer Python et son environnement</div>
+        <div class="ch-desc">Installation Windows/Mac, VS Code, premier script de comptabilité, les types Python expliqués par analogie Excel.</div>
+        <div class="ch-tags"><span class="ch-tag">Setup</span><span class="ch-tag">Bases</span><span class="ch-tag">Variables</span></div>
+      </div>
+
+      <div class="ch-card reveal d2">
+        <div class="ch-num">CH. 03</div>
+        <div class="ch-title">Excel + Python : lire, transformer, exporter</div>
+        <div class="ch-desc">Pandas pour lire n'importe quel fichier Excel comptable, filtrer, nettoyer et réexporter en quelques lignes.</div>
+        <div class="ch-tags"><span class="ch-tag">Pandas</span><span class="ch-tag">Excel</span><span class="ch-tag">openpyxl</span></div>
+      </div>
+
+      <div class="ch-card reveal">
+        <div class="ch-num">CH. 04</div>
+        <div class="ch-title">Automatiser la saisie comptable</div>
+        <div class="ch-desc">Générer des écritures comptables à partir de relevés bancaires CSV. Règles d'imputation automatiques.</div>
+        <div class="ch-tags"><span class="ch-tag">Saisie auto</span><span class="ch-tag">CSV</span><span class="ch-tag">Écritures</span></div>
+      </div>
+
+      <div class="ch-card reveal d1">
+        <div class="ch-num">CH. 05</div>
+        <div class="ch-title">Analyse financière avec Python</div>
+        <div class="ch-desc">Calcul automatique des ratios financiers clés : liquidité, rentabilité, solvabilité, avec visualisations.</div>
+        <div class="ch-tags"><span class="ch-tag">Ratios</span><span class="ch-tag">Graphiques</span><span class="ch-tag">matplotlib</span></div>
+      </div>
+
+      <div class="ch-card reveal d2">
+        <div class="ch-num">CH. 06</div>
+        <div class="ch-title">Rapprochement bancaire automatique</div>
+        <div class="ch-desc">Comparer relevé bancaire et grand livre, identifier les écarts, exporter uniquement les lignes non rapprochées.</div>
+        <div class="ch-tags"><span class="ch-tag">Rapprochement</span><span class="ch-tag">Audit</span><span class="ch-tag">Diff</span></div>
+      </div>
+
+      <div class="ch-card reveal">
+        <div class="ch-num">CH. 07</div>
+        <div class="ch-title">Génération de rapports et tableaux de bord</div>
+        <div class="ch-desc">Créer des rapports PDF professionnels et des dashboards Excel avec mise en forme conditionnelle automatique.</div>
+        <div class="ch-tags"><span class="ch-tag">PDF</span><span class="ch-tag">Dashboard</span><span class="ch-tag">fpdf2</span></div>
+      </div>
+
+      <div class="ch-card reveal d1">
+        <div class="ch-num">CH. 08</div>
+        <div class="ch-title">Fiscalité et TVA automatisée</div>
+        <div class="ch-desc">Calcul automatique de la TVA collectée/déductible, amortissements linéaires/dégressifs, déclarations pré-remplies.</div>
+        <div class="ch-tags"><span class="ch-tag">TVA 18%</span><span class="ch-tag">Amortissements</span><span class="ch-tag">Fiscal</span></div>
+      </div>
+
+      <div class="ch-card reveal d2">
+        <div class="ch-num">CH. 09</div>
+        <div class="ch-title">Cas pratique — PME béninoise complète</div>
+        <div class="ch-desc">De zéro au bilan : un pipeline comptable complet pour une PME, avec données réelles, code commenté et résultats.</div>
+        <div class="ch-tags"><span class="ch-tag">Projet réel</span><span class="ch-tag">PME Bénin</span><span class="ch-tag">Pipeline</span></div>
+      </div>
+
+      <div class="ch-card bonus reveal" style="grid-column:1/4">
+        <div class="ch-num">BONUS</div>
+        <div class="ch-title">5 Scripts prêts à l'emploi</div>
+        <div class="ch-desc">Convertisseur TVA interactif · Vérificateur de balance · Fusionneur de relevés bancaires · Détecteur d'anomalies · Générateur de données de test. Copiez-collez et adaptez immédiatement à votre activité.</div>
+        <div class="ch-tags"><span class="ch-tag">Clé en main</span><span class="ch-tag">Scripts réutilisables</span><span class="ch-tag">Production-ready</span></div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- CODE PREVIEW -->
+<section id="codepreview">
+  <div class="cp-inner">
+    <p class="sl reveal">Aperçu du code</p>
+    <h2 class="st2 reveal" style="margin-bottom:32px">Du <em>concret</em>, pas de la théorie</h2>
+    <div class="reveal">
+      <div class="code-block">
+        <div class="cb-header">
+          <div class="cb-dots">
+            <span style="background:#ff5f57"></span>
+            <span style="background:#febc2e"></span>
+            <span style="background:#28c840"></span>
+          </div>
+          <span class="cb-filename">facturation_tva.py — Chapitre 2 · Extrait</span>
+        </div>
+        <div class="cb-body">
+<span class="cm"># Traiter toutes les factures clients avec TVA automatique</span><br>
+<span class="vr">factures</span> = [<br>
+&nbsp;&nbsp;&nbsp;&nbsp;{<span class="st">"client"</span>: <span class="st">"SONIBANK"</span>,&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="st">"montant_ht"</span>: <span class="nu">500_000</span>},<br>
+&nbsp;&nbsp;&nbsp;&nbsp;{<span class="st">"client"</span>: <span class="st">"MOOV AFRICA"</span>,&nbsp;&nbsp;<span class="st">"montant_ht"</span>: <span class="nu">1_200_000</span>},<br>
+&nbsp;&nbsp;&nbsp;&nbsp;{<span class="st">"client"</span>: <span class="st">"SOBEBRA"</span>,&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="st">"montant_ht"</span>: <span class="nu">750_000</span>},<br>
+&nbsp;&nbsp;&nbsp;&nbsp;{<span class="st">"client"</span>: <span class="st">"CAJAF"</span>,&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="st">"montant_ht"</span>: <span class="nu">320_000</span>},<br>
+]<br><br>
+<span class="fn">print</span>(<span class="st">f"{'Client':<span style="color:#f78c6c">20</span>} {'HT':><span style="color:#f78c6c">12</span>} {'TVA':><span style="color:#f78c6c">12</span>} {'TTC':><span style="color:#f78c6c">12</span>}"</span>)<br>
+<span class="fn">print</span>(<span class="st">"-" * <span style="color:#f78c6c">58</span></span>)<br><br>
+<span class="kw">for</span> <span class="vr">f</span> <span class="kw">in</span> <span class="vr">factures</span>:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="vr">ht</span>&nbsp;&nbsp;= <span class="vr">f</span>[<span class="st">"montant_ht"</span>]<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="vr">tva</span> = <span class="vr">ht</span> * <span class="nu">0.18</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="cm"># TVA Bénin 18%</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="vr">ttc</span> = <span class="vr">ht</span> + <span class="vr">tva</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="fn">print</span>(<span class="st">f"{f['client']:<span style="color:#f78c6c">20</span>} {ht:><span style="color:#f78c6c">12</span>,.0f} {tva:><span style="color:#f78c6c">12</span>,.0f} {ttc:><span style="color:#f78c6c">12</span>,.0f}"</span>)
+        </div>
+      </div>
+      <div class="code-output">
+Client&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;HT&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;TVA&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;TTC<br>
+──────────────────────────────────────────────────────────<br>
+SONIBANK&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;500,000&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;90,000&nbsp;&nbsp;&nbsp;&nbsp;590,000<br>
+MOOV AFRICA&nbsp;&nbsp;&nbsp;&nbsp;1,200,000&nbsp;&nbsp;&nbsp;&nbsp;216,000&nbsp;&nbsp;1,416,000<br>
+SOBEBRA&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;750,000&nbsp;&nbsp;&nbsp;&nbsp;135,000&nbsp;&nbsp;&nbsp;&nbsp;885,000<br>
+CAJAF&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;320,000&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;57,600&nbsp;&nbsp;&nbsp;&nbsp;377,600
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- AUTHOR -->
+<section id="author">
+  <div class="author-inner">
+    <div class="reveal"><div class="author-av">MK</div></div>
+    <div>
+      <p class="author-tag reveal">L'auteur</p>
+      <h2 class="author-name reveal">M.M. Mardochée KIKIGBAGBAN</h2>
+      <p class="author-role reveal">Lead Developer · Data Trainer · Fondateur KGlearning</p>
+      <p class="author-bio reveal">
+        Développeur backend senior spécialisé Python/Django et FastAPI, avec plus de 5 ans d'expérience sur des projets en Afrique de l'Ouest et en France.
+        Formateur Data Analyst chez Modeltech à Dakar. Auteur de ressources numériques techniques accessibles
+        aux professionnels francophones — parce que la barrière de la langue ne devrait pas être un obstacle à la montée en compétences.
+      </p>
+      <div class="author-badges reveal">
+        <span class="author-badge">Python · Django · FastAPI</span>
+        <span class="author-badge">Data Analyst Trainer</span>
+        <span class="author-badge">Dakar, Sénégal</span>
+        <span class="author-badge">medium.com/@starkg3m</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PRICING -->
+<section id="pricing">
+  <div class="price-card reveal">
+    <p class="price-label">Ebook numérique</p>
+    <div class="price-title">Python pour Comptable</div>
+    <div class="price-sub">Le Guide Pratique — PDF complet + bonus</div>
+    <div class="price-amount"><sub>à partir de</sub> 15<sub>€</sub></div>
+    <p class="price-note">Accès immédiat · Téléchargement PDF · Mises à jour incluses</p>
+    <ul class="price-feat">
+      <li>9 chapitres progressifs, du débutant au projet réel</li>
+      <li>Code source complet, exercices, scripts réutilisables</li>
+      <li>5 scripts bonus prêts à copier-coller</li>
+      <li>Fichiers CSV et Excel d'exercices inclus</li>
+      <li>Exemples en FCFA, contexte PME Afrique de l'Ouest</li>
+      <li>En français, aucun prérequis en programmation</li>
+    </ul>
+    <a href="https://pzbcbrry.mychariow.shop/prd_qszfjt" class="price-cta" target="_blank">
+      Obtenir l'ebook maintenant →
+    </a>
+    <span class="price-link">pzbcbrry.mychariow.shop</span>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="ft-brand"><strong>KGlearning</strong> — Ressources numériques · Data &amp; IA · En français</div>
+  <div class="ft-copy">© 2026 M.M. Mardochée KIKIGBAGBAN — <a href="https://christmardochee.github.io/portfolio-mardochee/" target="_blank" style="color:var(--teal);text-decoration:none">Portfolio</a> — Tous droits réservés</div>
+</footer>
+
+<script>
+const io = new IntersectionObserver(entries => {
+  entries.forEach(e => { if(e.isIntersecting) e.target.classList.add('visible') })
+}, { threshold: 0.1 })
+document.querySelectorAll('.reveal').forEach(el => io.observe(el))
+</script>
+</body>
+</html>
