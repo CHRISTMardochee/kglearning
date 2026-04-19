@@ -1,0 +1,502 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Machine Learning Classique — De la Théorie à Scikit-Learn | KGlearning</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,400&family=JetBrains+Mono:wght@400;700&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --indigo:#4F46E5;--indigo-dark:#2D27A0;--indigo-deep:#080620;
+  --purple:#7C3AED;--cyan:#06B6D4;--gold:#F59E0B;
+  --bg:#08061e;--bg2:#0e0c28;--bg3:#141230;
+  --text:#e4e3f4;--muted:#7b78aa;--subtle:#2a2850;
+  --font-display:'Playfair Display',Georgia,serif;
+  --font-mono:'JetBrains Mono',monospace;
+  --font-body:'DM Sans',system-ui,sans-serif;
+}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--text);font-family:var(--font-body);overflow-x:hidden}
+::-webkit-scrollbar{width:5px}
+::-webkit-scrollbar-track{background:var(--bg)}
+::-webkit-scrollbar-thumb{background:var(--indigo-dark);border-radius:3px}
+
+/* NAV */
+nav{position:fixed;top:0;width:100%;z-index:100;padding:18px 60px;display:flex;align-items:center;justify-content:space-between;backdrop-filter:blur(20px);background:rgba(8,6,30,.88);border-bottom:1px solid rgba(79,70,229,.12)}
+.nav-logo{display:flex;align-items:center;gap:10px;text-decoration:none}
+.nav-logo-icon{width:36px;height:36px;background:var(--indigo);border-radius:7px;display:flex;align-items:center;justify-content:center;font-family:var(--font-mono);font-weight:700;font-size:13px;color:#fff}
+.nav-brand{font-size:15px;font-weight:500;color:var(--text)}
+.nav-brand span{color:#818cf8}
+.nav-cta{background:var(--indigo);color:#fff;padding:9px 22px;border-radius:6px;font-size:14px;font-weight:500;text-decoration:none;transition:background .2s}
+.nav-cta:hover{background:var(--indigo-dark)}
+
+/* HERO */
+#hero{min-height:100vh;position:relative;display:flex;align-items:center;overflow:hidden;padding:110px 60px 70px}
+.grid-bg{position:absolute;inset:0;background-image:linear-gradient(rgba(79,70,229,.04) 1px,transparent 1px),linear-gradient(90deg,rgba(79,70,229,.04) 1px,transparent 1px);background-size:56px 56px;pointer-events:none}
+#hero::after{content:'';position:absolute;top:-200px;right:-100px;width:800px;height:800px;background:radial-gradient(ellipse,rgba(79,70,229,.12) 0%,transparent 60%);pointer-events:none}
+
+.hero-inner{position:relative;z-index:2;display:grid;grid-template-columns:1fr 440px;gap:70px;align-items:center;max-width:1200px;margin:0 auto;width:100%}
+
+.badge{display:inline-flex;align-items:center;gap:8px;background:rgba(79,70,229,.12);border:1px solid rgba(79,70,229,.30);padding:5px 14px;border-radius:20px;font-family:var(--font-mono);font-size:11.5px;color:#818cf8;margin-bottom:24px}
+.badge-dot{width:6px;height:6px;background:var(--indigo);border-radius:50%;animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.25}}
+
+.hero-author{font-size:13px;color:var(--muted);margin-bottom:14px;font-style:italic}
+.hero-title{font-family:var(--font-display);font-size:clamp(46px,5vw,76px);font-weight:900;line-height:1.05;margin-bottom:0}
+.hero-title .t1,.hero-title .t2{color:var(--text)}
+.hero-title .t3{color:#818cf8;display:block;font-style:italic}
+
+.hero-tagline{font-family:var(--font-mono);font-size:12.5px;color:#67e8f9;margin:20px 0 16px;letter-spacing:.4px}
+.hero-tagline span{color:var(--muted)}
+
+.hero-desc{font-size:16.5px;line-height:1.78;color:#8886b0;max-width:520px;margin-bottom:34px;font-weight:300}
+.hero-desc strong{color:var(--text);font-weight:500}
+
+.hero-actions{display:flex;gap:12px;flex-wrap:wrap;align-items:center}
+.btn-primary{background:var(--indigo);color:#fff;padding:15px 30px;border-radius:8px;font-size:15.5px;font-weight:500;text-decoration:none;transition:all .25s}
+.btn-primary:hover{background:var(--indigo-dark);transform:translateY(-2px)}
+.btn-ghost{border:1px solid var(--subtle);color:#8886b0;padding:15px 26px;border-radius:8px;font-size:14.5px;text-decoration:none;transition:all .25s}
+.btn-ghost:hover{border-color:var(--indigo);color:#818cf8}
+
+.hero-stats{display:flex;gap:36px;margin-top:42px;padding-top:30px;border-top:1px solid var(--subtle)}
+.stat .num{font-family:var(--font-display);font-size:30px;font-weight:700;color:var(--text)}
+.stat .lbl{font-size:11px;color:var(--muted);letter-spacing:.6px;text-transform:uppercase;margin-top:2px}
+
+/* BOOK MOCKUP */
+.book-scene{perspective:1000px;display:flex;justify-content:center;align-items:center;position:relative}
+.book-wrap{transform-style:preserve-3d;transform:rotateY(-18deg) rotateX(4deg);transition:transform .6s cubic-bezier(.25,.46,.45,.94);position:relative}
+.book-wrap:hover{transform:rotateY(-6deg) rotateX(2deg)}
+.book-front{width:270px;height:378px;background:linear-gradient(155deg,#1e1a5e 0%,#0e0c38 55%,#050318 100%);border-radius:3px 10px 10px 3px;position:relative;overflow:hidden;box-shadow:20px 20px 60px rgba(0,0,0,.7),0 0 0 1px rgba(255,255,255,.04)}
+.bk-grid{position:absolute;inset:0;background-image:linear-gradient(rgba(255,255,255,.03) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.03) 1px,transparent 1px);background-size:22px 22px}
+.bk-glow{position:absolute;bottom:-60px;right:-60px;width:230px;height:230px;border-radius:50%;background:rgba(79,70,229,.15)}
+.bk-glow2{position:absolute;top:-40px;left:-40px;width:160px;height:160px;border-radius:50%;background:rgba(124,58,237,.08)}
+
+/* Neural net on book cover */
+.bk-nn{position:absolute;top:20px;left:50%;transform:translateX(-50%);width:220px;height:60px}
+.bk-content{position:absolute;inset:0;padding:28px 22px;display:flex;flex-direction:column;justify-content:flex-end}
+.bk-tag{font-family:var(--font-mono);font-size:8px;color:rgba(129,140,248,.75);letter-spacing:2px;text-transform:uppercase;margin-bottom:12px}
+.bk-title{font-family:var(--font-display);font-size:24px;font-weight:900;color:#fff;line-height:1.1;margin-bottom:6px}
+.bk-sub{font-family:var(--font-display);font-size:11px;font-style:italic;color:rgba(255,255,255,.55);margin-bottom:12px}
+.bk-bar{width:36px;height:2px;background:#06B6D4;margin-bottom:12px}
+.bk-author{font-size:8.5px;color:rgba(255,255,255,.40);letter-spacing:.8px;text-transform:uppercase}
+.bk-kg{position:absolute;top:20px;right:18px;font-family:var(--font-mono);font-size:9px;color:rgba(129,140,248,.5);font-weight:700}
+.book-spine{position:absolute;left:-30px;top:0;width:30px;height:378px;background:linear-gradient(180deg,#050318,#0e0c38);transform-origin:right;transform:rotateY(-90deg);display:flex;align-items:center;justify-content:center;border-radius:3px 0 0 3px}
+.book-spine-txt{font-family:var(--font-display);font-size:9px;color:rgba(255,255,255,.35);writing-mode:vertical-rl;letter-spacing:2px}
+
+.float-code{position:absolute;bottom:-24px;right:-50px;background:#0a0820;border:1px solid rgba(79,70,229,.25);border-radius:8px;padding:12px 16px;font-family:var(--font-mono);font-size:11px;line-height:1.9;box-shadow:0 16px 40px rgba(0,0,0,.4);min-width:240px;z-index:10}
+.fc-dots{display:flex;gap:5px;margin-bottom:9px}
+.fc-dots span{width:7px;height:7px;border-radius:50%}
+.kw{color:#c792ea}.fn{color:#82aaff}.st{color:#c3e88d}.cm{color:#4a5568;font-style:italic}.nu{color:#f78c6c}.vr{color:var(--text)}
+
+/* ALGOS BAND */
+#algos{background:linear-gradient(135deg,#1a1660,#0e0c38);padding:56px 60px;position:relative;overflow:hidden}
+#algos::before{content:'';position:absolute;right:-100px;top:-100px;width:500px;height:500px;background:radial-gradient(circle,rgba(255,255,255,.03),transparent 65%)}
+.algos-inner{max-width:1100px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;gap:40px;flex-wrap:wrap}
+.algos-quote{font-family:var(--font-display);font-size:clamp(20px,2.4vw,30px);font-style:italic;color:#fff;max-width:560px;line-height:1.55}
+.algos-quote em{color:#67e8f9;font-style:normal}
+.algos-pills{display:flex;flex-wrap:wrap;gap:10px;max-width:420px}
+.algo-pill{font-family:var(--font-mono);font-size:12px;background:rgba(79,70,229,.18);border:1px solid rgba(79,70,229,.40);color:#818cf8;padding:6px 14px;border-radius:20px}
+
+/* CHAPTERS */
+#chapters{padding:100px 60px}
+.sl{font-family:var(--font-mono);font-size:11px;color:#818cf8;letter-spacing:2px;text-transform:uppercase;margin-bottom:14px}
+.st2{font-family:var(--font-display);font-size:clamp(34px,3.8vw,52px);font-weight:700;line-height:1.15;margin-bottom:20px}
+.st2 em{font-style:italic;color:#818cf8}
+.ch-intro{max-width:700px;margin-bottom:54px}
+.ch-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;max-width:1100px;margin:0 auto}
+.ch-card{background:var(--bg2);border:1px solid var(--subtle);border-radius:12px;padding:26px;transition:all .3s;cursor:default;position:relative;overflow:hidden}
+.ch-card:hover{border-color:rgba(79,70,229,.40);transform:translateY(-3px);box-shadow:0 18px 36px rgba(0,0,0,.3)}
+.ch-card::after{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--indigo),transparent);opacity:0;transition:opacity .3s}
+.ch-card:hover::after{opacity:1}
+.ch-card.bonus{border-color:rgba(245,158,11,.18);background:linear-gradient(135deg,var(--bg2),rgba(245,158,11,.03))}
+.ch-card.bonus::after{background:linear-gradient(90deg,var(--gold),transparent)}
+.ch-num{font-family:var(--font-mono);font-size:10.5px;color:#818cf8;letter-spacing:1.5px;margin-bottom:12px}
+.ch-card.bonus .ch-num{color:var(--gold)}
+.ch-title{font-family:var(--font-display);font-size:17px;font-weight:700;color:var(--text);margin-bottom:8px;line-height:1.3}
+.ch-desc{font-size:13px;color:var(--muted);line-height:1.7;margin-bottom:14px}
+.ch-tags{display:flex;flex-wrap:wrap;gap:5px}
+.ch-tag{font-family:var(--font-mono);font-size:9.5px;background:rgba(79,70,229,.08);border:1px solid rgba(79,70,229,.20);color:#818cf8;padding:2.5px 7px;border-radius:4px}
+.ch-card.bonus .ch-tag{background:rgba(245,158,11,.08);border-color:rgba(245,158,11,.22);color:var(--gold)}
+
+/* CODE */
+#codepreview{padding:80px 60px;background:var(--bg2);border-top:1px solid var(--subtle);border-bottom:1px solid var(--subtle)}
+.cp-inner{max-width:960px;margin:0 auto}
+.code-block{background:#060416;border:1px solid var(--subtle);border-radius:12px;overflow:hidden}
+.cb-header{display:flex;align-items:center;gap:8px;padding:13px 18px;border-bottom:1px solid var(--subtle);background:#080620}
+.cb-dots{display:flex;gap:5px}
+.cb-dots span{width:9px;height:9px;border-radius:50%}
+.cb-filename{font-family:var(--font-mono);font-size:11.5px;color:var(--muted);margin-left:8px}
+.cb-body{padding:22px;font-family:var(--font-mono);font-size:13px;line-height:2;overflow-x:auto}
+.cb-body .kw{color:#c792ea}.cb-body .fn{color:#82aaff}.cb-body .st{color:#c3e88d}
+.cb-body .cm{color:#4a5568;font-style:italic}.cb-body .nu{color:#f78c6c}
+.cb-body .cl{color:#ffcb6b}.cb-body .vr{color:var(--text)}
+.code-output{margin-top:14px;background:#060416;border:1px solid rgba(79,70,229,.20);border-radius:8px;padding:16px 20px;font-family:var(--font-mono);font-size:12.5px;color:#818cf8;line-height:1.9}
+.code-output::before{content:'OUTPUT';display:block;font-size:9.5px;color:var(--muted);letter-spacing:2px;margin-bottom:10px}
+
+/* AUTHOR */
+#author{padding:90px 60px}
+.author-inner{max-width:860px;margin:0 auto;display:grid;grid-template-columns:180px 1fr;gap:56px;align-items:start}
+.author-av{width:160px;height:160px;border-radius:14px;background:linear-gradient(135deg,#1a1660,#050318);display:flex;align-items:center;justify-content:center;font-family:var(--font-display);font-size:46px;font-weight:700;color:#818cf8;border:1px solid rgba(79,70,229,.25);flex-shrink:0}
+.author-tag{font-family:var(--font-mono);font-size:10.5px;color:#818cf8;letter-spacing:1.5px;text-transform:uppercase;margin-bottom:10px}
+.author-name{font-family:var(--font-display);font-size:28px;font-weight:700;margin-bottom:5px}
+.author-role{font-size:13.5px;color:var(--muted);margin-bottom:18px}
+.author-bio{font-size:14.5px;line-height:1.82;color:#8886b0;margin-bottom:22px;font-weight:300}
+.author-badges{display:flex;flex-wrap:wrap;gap:7px}
+.author-badge{font-size:11.5px;border:1px solid var(--subtle);padding:4px 11px;border-radius:20px;color:var(--muted)}
+
+/* PRICING */
+#pricing{padding:100px 60px;text-align:center;position:relative;overflow:hidden}
+#pricing::before{content:'';position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:700px;height:700px;background:radial-gradient(ellipse,rgba(79,70,229,.08) 0%,transparent 65%);pointer-events:none}
+.price-card{max-width:500px;margin:0 auto;background:var(--bg2);border:1px solid rgba(79,70,229,.25);border-radius:20px;padding:50px;position:relative;overflow:hidden}
+.price-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,transparent,var(--indigo),var(--cyan),var(--gold),transparent)}
+.price-label{font-family:var(--font-mono);font-size:11px;color:#818cf8;letter-spacing:2px;text-transform:uppercase;margin-bottom:10px}
+.price-title{font-family:var(--font-display);font-size:24px;font-weight:700;margin-bottom:6px}
+.price-sub{font-size:13.5px;color:var(--muted);margin-bottom:28px}
+.price-amount{font-family:var(--font-display);font-size:58px;font-weight:900;margin-bottom:6px}
+.price-amount sub{font-size:20px;color:var(--muted);font-family:var(--font-body);font-weight:300;vertical-align:middle}
+.price-note{font-size:12.5px;color:var(--muted);margin-bottom:28px}
+.price-feat{list-style:none;text-align:left;margin-bottom:32px;display:flex;flex-direction:column;gap:11px}
+.price-feat li{display:flex;align-items:center;gap:10px;font-size:13.5px;color:#8886b0}
+.price-feat li::before{content:'';width:15px;height:15px;flex-shrink:0;border-radius:50%;background:rgba(79,70,229,.12);border:1px solid var(--indigo);background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='M3 8l3.5 3.5L13 4.5' stroke='%234F46E5' stroke-width='2' fill='none' stroke-linecap='round'/%3E%3C/svg%3E")}
+.price-cta{display:block;width:100%;padding:17px;background:var(--indigo);color:#fff;border-radius:9px;font-size:16.5px;font-weight:500;text-decoration:none;transition:all .25s}
+.price-cta:hover{background:var(--indigo-dark);transform:translateY(-2px);box-shadow:0 12px 28px rgba(79,70,229,.3)}
+.price-link{display:block;margin-top:14px;font-family:var(--font-mono);font-size:10.5px;color:var(--muted)}
+
+/* FOOTER */
+footer{padding:36px 60px;border-top:1px solid var(--subtle);display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:14px}
+.ft-brand{font-size:13.5px;color:var(--muted)}
+.ft-brand strong{color:#818cf8}
+.ft-copy{font-size:11.5px;color:var(--subtle)}
+
+/* REVEAL */
+.reveal{opacity:0;transform:translateY(28px);transition:opacity .65s ease,transform .65s ease}
+.reveal.visible{opacity:1;transform:none}
+.d1{transition-delay:.1s}.d2{transition-delay:.2s}.d3{transition-delay:.3s}
+
+@media(max-width:900px){
+  nav{padding:14px 22px}
+  #hero{padding:90px 22px 60px}
+  .hero-inner{grid-template-columns:1fr;gap:40px}
+  .book-scene{display:none}
+  #algos,#chapters,#codepreview,#author,#pricing{padding:56px 22px}
+  .ch-grid{grid-template-columns:1fr}
+  .author-inner{grid-template-columns:1fr}
+  footer{padding:28px 22px}
+}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a href="#" class="nav-logo">
+    <div class="nav-logo-icon">KG</div>
+    <span class="nav-brand">KG<span>learning</span></span>
+  </a>
+  <a href="#pricing" class="nav-cta">Obtenir le livre</a>
+</nav>
+
+<!-- HERO -->
+<section id="hero">
+  <div class="grid-bg"></div>
+  <div class="hero-inner">
+
+    <div>
+      <div class="badge"><span class="badge-dot"></span>Ebook Numérique · Machine Learning · Scikit-Learn</div>
+      <p class="hero-author">Par M.M. Mardochée KIKIGBAGBAN — Consultant IT & Data Trainer</p>
+      <h1 class="hero-title">
+        <span class="t1">Machine Learning</span><br>
+        <span class="t2">Classique</span>
+        <span class="t3">De la Théorie à Scikit-Learn</span>
+      </h1>
+      <p class="hero-tagline"><span>// </span>Algorithmes · Modèles · Projets réels — en français</p>
+      <p class="hero-desc">
+        Du perceptron aux forêts aléatoires — ce guide vous emmène de
+        <strong>la théorie mathématique</strong> aux
+        <strong>implémentations concrètes avec Scikit-Learn</strong>,
+        sans sacrifier la compréhension pour la pratique.
+      </p>
+      <div class="hero-actions">
+        <a href="#pricing" class="btn-primary">Obtenir l'ebook →</a>
+        <a href="#chapters" class="btn-ghost">Voir le programme</a>
+      </div>
+      <div class="hero-stats">
+        <div class="stat"><span class="num">8</span><span class="lbl">Chapitres</span></div>
+        <div class="stat"><span class="num">15+</span><span class="lbl">Algorithmes</span></div>
+        <div class="stat"><span class="num">3</span><span class="lbl">Projets réels</span></div>
+        <div class="stat"><span class="num">0</span><span class="lbl">Prérequis ML</span></div>
+      </div>
+    </div>
+
+    <div class="book-scene">
+      <div class="book-wrap">
+        <div class="book-spine"><span class="book-spine-txt">Machine Learning Classique</span></div>
+        <div class="book-front">
+          <div class="bk-grid"></div>
+          <div class="bk-glow"></div>
+          <div class="bk-glow2"></div>
+
+          <!-- Neural net SVG on cover -->
+          <svg class="bk-nn" viewBox="0 0 220 60" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="20" cy="20" r="6" fill="rgba(79,70,229,.6)"/>
+            <circle cx="20" cy="40" r="6" fill="rgba(79,70,229,.6)"/>
+            <circle cx="75" cy="15" r="7" fill="rgba(124,58,237,.7)"/>
+            <circle cx="75" cy="35" r="7" fill="rgba(124,58,237,.7)"/>
+            <circle cx="75" cy="52" r="7" fill="rgba(124,58,237,.7)"/>
+            <circle cx="145" cy="25" r="8" fill="rgba(79,70,229,.8)"/>
+            <circle cx="145" cy="48" r="8" fill="rgba(79,70,229,.8)"/>
+            <circle cx="200" cy="35" r="10" fill="#4F46E5"/>
+            <line x1="26" y1="20" x2="68" y2="15" stroke="rgba(79,70,229,.35)" stroke-width="1.2"/>
+            <line x1="26" y1="40" x2="68" y2="35" stroke="rgba(79,70,229,.35)" stroke-width="1.2"/>
+            <line x1="26" y1="40" x2="68" y2="52" stroke="rgba(79,70,229,.25)" stroke-width="1"/>
+            <line x1="82" y1="15" x2="137" y2="25" stroke="rgba(124,58,237,.40)" stroke-width="1.5"/>
+            <line x1="82" y1="35" x2="137" y2="25" stroke="rgba(124,58,237,.30)" stroke-width="1.5"/>
+            <line x1="82" y1="52" x2="137" y2="48" stroke="rgba(124,58,237,.40)" stroke-width="1.5"/>
+            <line x1="153" y1="25" x2="190" y2="35" stroke="rgba(6,182,212,.55)" stroke-width="2"/>
+            <line x1="153" y1="48" x2="190" y2="35" stroke="rgba(6,182,212,.45)" stroke-width="2"/>
+          </svg>
+
+          <div class="bk-content">
+            <span class="bk-tag">KGlearning · Ebook Pratique</span>
+            <div class="bk-title">Machine<br>Learning<br>Classique</div>
+            <div class="bk-sub">De la Théorie à Scikit-Learn</div>
+            <div class="bk-bar"></div>
+            <div class="bk-author">M.M. Mardochée KIKIGBAGBAN</div>
+          </div>
+          <div class="bk-kg">KGlearning</div>
+        </div>
+
+        <!-- Floating code -->
+        <div class="float-code">
+          <div class="fc-dots">
+            <span style="background:#ff5f57"></span>
+            <span style="background:#febc2e"></span>
+            <span style="background:#28c840"></span>
+          </div>
+          <div><span class="cm"># Entraîner un modèle</span></div>
+          <div><span class="kw">from</span> <span class="vr">sklearn.ensemble</span> <span class="kw">import</span></div>
+          <div>&nbsp;&nbsp;<span class="cl">RandomForestClassifier</span></div>
+          <div><span class="vr">model</span> = <span class="cl">RandomForestClassifier</span>()</div>
+          <div><span class="vr">model</span>.<span class="fn">fit</span>(<span class="vr">X_train</span>, <span class="vr">y_train</span>)</div>
+          <div style="color:#67e8f9"><span class="fn">print</span>(<span class="st">f"Score: {'{score:.2%}'}"</span>)</div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ALGOS BAND -->
+<section id="algos">
+  <div class="algos-inner">
+    <div class="algos-quote reveal">
+      « Comprendre <em>pourquoi</em> un algorithme fonctionne,<br>
+      c'est ce qui vous sépare d'un simple utilisateur de bibliothèque. »
+    </div>
+    <div class="algos-pills reveal d1">
+      <span class="algo-pill">Régression linéaire</span>
+      <span class="algo-pill">Régression logistique</span>
+      <span class="algo-pill">KNN</span>
+      <span class="algo-pill">SVM</span>
+      <span class="algo-pill">Decision Tree</span>
+      <span class="algo-pill">Random Forest</span>
+      <span class="algo-pill">Gradient Boosting</span>
+      <span class="algo-pill">K-Means</span>
+      <span class="algo-pill">PCA</span>
+      <span class="algo-pill">Cross-Validation</span>
+      <span class="algo-pill">Pipeline Scikit-Learn</span>
+    </div>
+  </div>
+</section>
+
+<!-- CHAPTERS -->
+<section id="chapters">
+  <div style="max-width:1100px;margin:0 auto">
+    <p class="sl reveal">Programme complet</p>
+    <div class="ch-intro reveal">
+      <h2 class="st2">8 chapitres, de la <em>théorie aux projets</em></h2>
+      <p style="font-size:15.5px;color:var(--muted);line-height:1.75;margin-top:14px;font-weight:300">
+        Conçu pour les développeurs, data analysts et étudiants francophones.
+        Notions de Python requises, zéro prérequis en Machine Learning.
+      </p>
+    </div>
+    <div class="ch-grid">
+
+      <div class="ch-card reveal">
+        <div class="ch-num">CH. 01</div>
+        <div class="ch-title">Fondements du Machine Learning</div>
+        <div class="ch-desc">Supervised vs unsupervised, biais-variance, overfitting, métriques d'évaluation. Les bases théoriques indispensables.</div>
+        <div class="ch-tags"><span class="ch-tag">Théorie</span><span class="ch-tag">Métriques</span><span class="ch-tag">Concepts</span></div>
+      </div>
+
+      <div class="ch-card reveal d1">
+        <div class="ch-num">CH. 02</div>
+        <div class="ch-title">Préparer ses données</div>
+        <div class="ch-desc">Nettoyage, encoding, normalisation, gestion des valeurs manquantes. La réalité des données avant tout modèle.</div>
+        <div class="ch-tags"><span class="ch-tag">Pandas</span><span class="ch-tag">Preprocessing</span><span class="ch-tag">Feature Engineering</span></div>
+      </div>
+
+      <div class="ch-card reveal d2">
+        <div class="ch-num">CH. 03</div>
+        <div class="ch-title">Algorithmes supervisés — Régression</div>
+        <div class="ch-desc">Régression linéaire, polynomiale, Ridge/Lasso. Intuition mathématique + implémentation Scikit-Learn.</div>
+        <div class="ch-tags"><span class="ch-tag">Régression</span><span class="ch-tag">LinearRegression</span><span class="ch-tag">Lasso</span></div>
+      </div>
+
+      <div class="ch-card reveal">
+        <div class="ch-num">CH. 04</div>
+        <div class="ch-title">Algorithmes supervisés — Classification</div>
+        <div class="ch-desc">Logistic Regression, KNN, SVM, Decision Tree. Confusion matrix, ROC, F1-score expliqués et appliqués.</div>
+        <div class="ch-tags"><span class="ch-tag">SVM</span><span class="ch-tag">KNN</span><span class="ch-tag">Classification</span></div>
+      </div>
+
+      <div class="ch-card reveal d1">
+        <div class="ch-num">CH. 05</div>
+        <div class="ch-title">Méthodes d'ensemble</div>
+        <div class="ch-desc">Bagging, Random Forest, Gradient Boosting, XGBoost. Pourquoi combiner des modèles faibles donne des résultats puissants.</div>
+        <div class="ch-tags"><span class="ch-tag">Random Forest</span><span class="ch-tag">XGBoost</span><span class="ch-tag">Ensemble</span></div>
+      </div>
+
+      <div class="ch-card reveal d2">
+        <div class="ch-num">CH. 06</div>
+        <div class="ch-title">Apprentissage non-supervisé</div>
+        <div class="ch-desc">K-Means, clustering hiérarchique, DBSCAN, PCA pour la réduction de dimensionnalité. Trouver des patterns sans labels.</div>
+        <div class="ch-tags"><span class="ch-tag">K-Means</span><span class="ch-tag">PCA</span><span class="ch-tag">Clustering</span></div>
+      </div>
+
+      <div class="ch-card reveal">
+        <div class="ch-num">CH. 07</div>
+        <div class="ch-title">Optimisation et validation</div>
+        <div class="ch-desc">Cross-validation, GridSearchCV, Pipeline Scikit-Learn. Construire des workflows robustes et reproductibles.</div>
+        <div class="ch-tags"><span class="ch-tag">GridSearch</span><span class="ch-tag">Pipeline</span><span class="ch-tag">Validation</span></div>
+      </div>
+
+      <div class="ch-card reveal d1">
+        <div class="ch-num">CH. 08</div>
+        <div class="ch-title">3 Projets réels complets</div>
+        <div class="ch-desc">Prédiction de prix immobiliers · Détection de fraude · Segmentation clients. Code complet, commenté, prêt à adapter.</div>
+        <div class="ch-tags"><span class="ch-tag">Projets réels</span><span class="ch-tag">End-to-end</span><span class="ch-tag">Production</span></div>
+      </div>
+
+      <div class="ch-card bonus reveal d2">
+        <div class="ch-num">BONUS</div>
+        <div class="ch-title">Cheatsheet Scikit-Learn + Templates</div>
+        <div class="ch-desc">Résumé visuel de tous les algorithmes · Template de pipeline ML réutilisable · Guide de sélection du bon modèle selon votre problème.</div>
+        <div class="ch-tags"><span class="ch-tag">Cheatsheet</span><span class="ch-tag">Templates</span><span class="ch-tag">Clé en main</span></div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- CODE PREVIEW -->
+<section id="codepreview">
+  <div class="cp-inner">
+    <p class="sl reveal">Aperçu du code</p>
+    <h2 class="st2 reveal" style="margin-bottom:32px">Théorie et <em>pratique</em> à chaque chapitre</h2>
+    <div class="reveal">
+      <div class="code-block">
+        <div class="cb-header">
+          <div class="cb-dots">
+            <span style="background:#ff5f57"></span>
+            <span style="background:#febc2e"></span>
+            <span style="background:#28c840"></span>
+          </div>
+          <span class="cb-filename">projet_fraude.py — Chapitre 8 · Extrait</span>
+        </div>
+        <div class="cb-body">
+<span class="cm"># ─── Détection de fraude bancaire — Pipeline complet ───</span><br>
+<span class="kw">from</span> <span class="vr">sklearn.pipeline</span> <span class="kw">import</span> <span class="cl">Pipeline</span><br>
+<span class="kw">from</span> <span class="vr">sklearn.preprocessing</span> <span class="kw">import</span> <span class="cl">StandardScaler</span><br>
+<span class="kw">from</span> <span class="vr">sklearn.ensemble</span> <span class="kw">import</span> <span class="cl">RandomForestClassifier</span><br>
+<span class="kw">from</span> <span class="vr">sklearn.model_selection</span> <span class="kw">import</span> <span class="cl">cross_val_score</span><br>
+<span class="kw">from</span> <span class="vr">sklearn.metrics</span> <span class="kw">import</span> <span class="cl">classification_report</span><br>
+<br>
+<span class="cm"># 1. Construire le pipeline</span><br>
+<span class="vr">pipeline</span> = <span class="cl">Pipeline</span>([<br>
+&nbsp;&nbsp;&nbsp;&nbsp;(<span class="st">'scaler'</span>, <span class="cl">StandardScaler</span>()),<br>
+&nbsp;&nbsp;&nbsp;&nbsp;(<span class="st">'model'</span>,  <span class="cl">RandomForestClassifier</span>(<span class="vr">n_estimators</span>=<span class="nu">100</span>, <span class="vr">random_state</span>=<span class="nu">42</span>))<br>
+])<br>
+<br>
+<span class="cm"># 2. Validation croisée (5 folds)</span><br>
+<span class="vr">scores</span> = <span class="fn">cross_val_score</span>(<span class="vr">pipeline</span>, <span class="vr">X_train</span>, <span class="vr">y_train</span>, <span class="vr">cv</span>=<span class="nu">5</span>, <span class="vr">scoring</span>=<span class="st">'f1'</span>)<br>
+<span class="fn">print</span>(<span class="st">f"F1 moyen : {scores.mean():.3f} ± {scores.std():.3f}"</span>)<br>
+<br>
+<span class="cm"># 3. Entraînement final + rapport</span><br>
+<span class="vr">pipeline</span>.<span class="fn">fit</span>(<span class="vr">X_train</span>, <span class="vr">y_train</span>)<br>
+<span class="fn">print</span>(<span class="fn">classification_report</span>(<span class="vr">y_test</span>, <span class="vr">pipeline</span>.<span class="fn">predict</span>(<span class="vr">X_test</span>)))
+        </div>
+      </div>
+      <div class="code-output">
+F1 moyen : 0.947 ± 0.012<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;precision&nbsp;&nbsp;&nbsp;recall&nbsp;&nbsp;f1-score<br>
+&nbsp;&nbsp;&nbsp;Légitime&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;0.99&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;1.00&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;0.99<br>
+&nbsp;&nbsp;&nbsp;Fraude&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;0.94&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;0.91&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;0.93<br>
+accuracy&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;0.99
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- AUTHOR -->
+<section id="author">
+  <div class="author-inner">
+    <div class="reveal"><div class="author-av">MK</div></div>
+    <div>
+      <p class="author-tag reveal">L'auteur</p>
+      <h2 class="author-name reveal">M.M. Mardochée KIKIGBAGBAN</h2>
+      <p class="author-role reveal">Consultant IT · Data Trainer · Fondateur KGlearning</p>
+      <p class="author-bio reveal">
+        Développeur backend senior spécialisé Python/Django et FastAPI, formateur Data Analyst chez Modeltech à Dakar.
+        Passionné par la démocratisation du Machine Learning et de la Data Science pour les professionnels francophones
+        d'Afrique et d'Europe — parce que la qualité des ressources techniques ne devrait pas dépendre de la langue.
+      </p>
+      <div class="author-badges reveal">
+        <span class="author-badge">Python · Scikit-Learn · FastAPI</span>
+        <span class="author-badge">Data Analyst Trainer</span>
+        <span class="author-badge">Dakar, Sénégal</span>
+        <span class="author-badge">medium.com/@starkg3m</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PRICING -->
+<section id="pricing">
+  <div class="price-card reveal">
+    <p class="price-label">Ebook numérique</p>
+    <div class="price-title">Machine Learning Classique</div>
+    <div class="price-sub">De la Théorie à Scikit-Learn — PDF complet + bonus</div>
+    <div class="price-amount"><sub>à partir de</sub> 4<sub>€</sub></div>
+    <p class="price-note">Accès immédiat · Téléchargement PDF · Mises à jour incluses</p>
+    <ul class="price-feat">
+      <li>8 chapitres de la théorie aux projets réels</li>
+      <li>15+ algorithmes expliqués et implémentés</li>
+      <li>3 projets end-to-end complets et commentés</li>
+      <li>Bonus : Cheatsheet Scikit-Learn + templates pipeline</li>
+      <li>En français, accessible sans prérequis ML</li>
+    </ul>
+    <a href="https://pzbcbrry.mychariow.shop/prd_rsxgkm" class="price-cta" target="_blank">
+      Obtenir l'ebook maintenant →
+    </a>
+    <span class="price-link">pzbcbrry.mychariow.shop/prd_rsxgkm</span>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="ft-brand"><strong>KGlearning</strong> — Ressources numériques · Data &amp; IA · En français</div>
+  <div class="ft-copy">© 2026 M.M. Mardochée KIKIGBAGBAN — <a href="https://christmardochee.github.io/portfolio-mardochee/" target="_blank" style="color:#818cf8;text-decoration:none">Portfolio</a></div>
+</footer>
+
+<script>
+const io = new IntersectionObserver(entries => {
+  entries.forEach(e => { if(e.isIntersecting) e.target.classList.add('visible') })
+}, { threshold: 0.1 })
+document.querySelectorAll('.reveal').forEach(el => io.observe(el))
+</script>
+</body>
+</html>
